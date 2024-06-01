@@ -26,50 +26,7 @@ namespace Editor
 		ImGui::Begin("DockSpace Demo", NULL, window_flags);
 		ImGui::PopStyleVar(3);
 
-		if (ImGui::BeginMenuBar())
-		{
-			if (ImGui::BeginMenu("File"))
-			{
-				if (ImGui::MenuItem("New"))
-				{
-					// Do something
-				}
-
-				if (ImGui::MenuItem("Open"))
-				{
-					// Do something
-				}
-
-				if (ImGui::MenuItem("Save"))
-				{
-					// Do something
-				}
-
-				if (ImGui::MenuItem("Exit"))
-				{
-					WindowManager::GetInstance().IsRunning() = false;
-				}
-
-				ImGui::EndMenu();
-			}
-
-			if (ImGui::BeginMenu("Edit"))
-			{
-				if (ImGui::MenuItem("Undo"))
-				{
-					// Do something
-				}
-
-				if (ImGui::MenuItem("Redo"))
-				{
-					// Do something
-				}
-
-				ImGui::EndMenu();
-			}
-
-			ImGui::EndMenuBar();
-		}
+		mMenuBar->OnPaint();
 
 		ImGuiID dockspace_id = ImGui::GetID("DockSpace");
 		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None);
@@ -86,41 +43,33 @@ namespace Editor
 			ImGuiID dock_id_right = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Right, 0.20f, nullptr, &dockspace_id);
 			ImGuiID dock_id_bottom = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Down, 0.25f, nullptr, &dockspace_id);
 
+			// Apply flags to each dock node
+			ImGuiDockNode* node_left = ImGui::DockBuilderGetNode(dock_id_left);
+			if (node_left)
+				node_left->LocalFlags |= ImGuiDockNodeFlags_NoUndocking | ImGuiDockNodeFlags_NoResize;
+
+			ImGuiDockNode* node_right = ImGui::DockBuilderGetNode(dock_id_right);
+			if (node_right)
+				node_right->LocalFlags |= ImGuiDockNodeFlags_NoUndocking | ImGuiDockNodeFlags_NoResize;
+
+			ImGuiDockNode* node_bottom = ImGui::DockBuilderGetNode(dock_id_bottom);
+			if (node_bottom)
+				node_bottom->LocalFlags |= ImGuiDockNodeFlags_NoUndocking | ImGuiDockNodeFlags_NoResize;
+
+			ImGuiDockNode* node_center = ImGui::DockBuilderGetNode(dockspace_id);
+			if (node_center)
+				node_center->LocalFlags |= ImGuiDockNodeFlags_NoUndocking | ImGuiDockNodeFlags_NoResize;
+
 			// Dock the windows into the respective nodes
 			ImGui::DockBuilderDockWindow("World Outliner", dock_id_left);
-			ImGui::DockBuilderDockWindow("Object Definitions", dock_id_right);
+			ImGui::DockBuilderDockWindow("Entity Details", dock_id_right);
 			ImGui::DockBuilderDockWindow("Content Browser", dock_id_bottom);
-			ImGui::DockBuilderDockWindow("World Watcher", dockspace_id); // Center
+			ImGui::DockBuilderDockWindow("Scene Renderer", dockspace_id); // Center
 
 			// Finish the dock builder process
 			ImGui::DockBuilderFinish(dockspace_id);
 		}
 
-		ImGui::End();
-
-		// Left Window Embedded to DockSpace
-		if (ImGui::Begin("World Outliner"))
-		{
-			ImGui::Text("Hello from Left Window!");
-		}
-		ImGui::End();
-
-		if (ImGui::Begin("Object Definitions"))
-		{
-			ImGui::Text("Hello from Right Window!");
-		}
-		ImGui::End();
-
-		if (ImGui::Begin("Content Browser"))
-		{
-			ImGui::Text("Hello from Bottom Window!");
-		}
-		ImGui::End();
-
-		if (ImGui::Begin("World Watcher"))
-		{
-			ImGui::Text("Hello from Center Window!");
-		}
 		ImGui::End();
 	}
 }

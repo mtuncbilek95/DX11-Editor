@@ -11,5 +11,11 @@ namespace Editor
 		virtual ~RenderModule() = default;
 
 		virtual void OnPaint() = 0;
+
+		String GetModuleName() const { return mModuleName; }
+
+	protected:
+		bool mIsModuleDirty = false;
+		String mModuleName;
 	};
 }

@@ -3,7 +3,7 @@
 #include <Runtime/Core/Core.h>
 #include <Runtime/Render/RenderModule.h>
 
-#include <Runtime/Editor/GUIWindow.h/DockWindow.h>
+#include <Runtime/Editor/GUIWindow/DockWindow.h>
 
 #include <Runtime/Editor/ImGuiKeyUtils.h>
 
@@ -65,15 +65,24 @@ namespace Editor
 
 		void Update()
 		{
-			for (auto& module : mRenderModules)
+			for (u32 i = 0; i < mRenderModules.size(); i++)
 			{
-				module->OnPaint();
+				mRenderModules[i]->OnPaint();
 			}
 		}
 
 		void AddModule(SharedPtr<RenderModule> module)
 		{
 			mRenderModules.push_back(module);
+		}
+
+		void RemoveModule(const String& moduleName)
+		{
+			// Remove the module and reduce the size of the array
+			mRenderModules.erase(std::remove_if(mRenderModules.begin(), mRenderModules.end(), [moduleName](const SharedPtr<RenderModule>& module)
+				{
+					return module->GetModuleName() == moduleName;
+				}), mRenderModules.end());
 		}
 
 	private:

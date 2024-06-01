@@ -5,15 +5,12 @@
 
 namespace Editor
 {
-	class DockWindow : public RenderModule
+	class EntityDetails : public RenderModule
 	{
 	public:
-		DockWindow() : RenderModule() {}
-		virtual ~DockWindow() override = default;
+		EntityDetails() : RenderModule() { mModuleName = "EntityDetails"; }
+		virtual ~EntityDetails() = default;
 
 		virtual void OnPaint() override;
-
-	private:
-		bool mIsDirty = false;
 	};
 }
